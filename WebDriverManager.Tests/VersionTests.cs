@@ -12,7 +12,7 @@ namespace WebDriverManager.Tests
         private readonly List<object[]> _data = new List<object[]>
         {
             new object[] {new ChromeConfig(), @"^\d+\.\d+$"},
-            new object[] {new EdgeConfig(), @"^\d+\.\d+$"},
+            new object[] {new EdgeConfig(), @"^[A-Z0-9-/]*$"},
             new object[] {new FirefoxConfig(), @"^\d+\.\d+\.\d+$"},
             new object[] {new InternetExplorerConfig(), @"^\d+\.\d+\.\d+$"},
             new object[] {new OperaConfig(), @"^\d+\.\d+$"},
@@ -35,7 +35,7 @@ namespace WebDriverManager.Tests
         [Theory, ClassData(typeof(VersionData))]
         protected void VersionTest(IDriverConfig driverConfig, string pattern)
         {
-            var version = driverConfig.GetLatestVersion();
+            var version = driverConfig.GetDriverVersion("Latest");
             var regex = new Regex(pattern);
             var match = regex.Match(version);
             Assert.NotEmpty(version);

@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
+using WebDriverManager.Helpers;
 
 namespace WebDriverManager.DriverConfigs.Impl
 {
@@ -26,9 +30,85 @@ namespace WebDriverManager.DriverConfigs.Impl
             return "chromedriver.exe";
         }
 
-        public virtual string GetLatestVersion()
+        public virtual string GetDriverVersion(string browserVersion)
         {
-            var uri = new Uri("https://chromedriver.storage.googleapis.com/LATEST_RELEASE");
+            var driverVersion = String.Empty;
+
+            if (browserVersion.Equals("Latest", StringComparison.InvariantCultureIgnoreCase))
+            {
+                // look online
+                bool onlineLookupSuccessful;
+
+                try
+                {
+                    driverVersion = GetLatestVersion();
+                    onlineLookupSuccessful = true;
+                }
+                catch (Exception)
+                {
+                    onlineLookupSuccessful = false;
+                    //Add Logging
+                }
+
+
+                //was it successful?
+                if (!onlineLookupSuccessful)
+                {
+                    //no
+                    /// look at dictoinary and get latest version stored
+
+                    return CompatibilityHelper.GetLatestStoredVersion(BrowserName.Chrome);
+                }
+                else
+                {
+                    return driverVersion;
+                }
+
+            }
+            else
+            {
+                //search 
+                try
+                {
+                    Int32.TryParse(browserVersion, out int j);
+
+                    if (j > 73)
+                    {
+                        driverVersion = GetLatestVersion(browserVersion);
+                    }
+                    else
+                    {
+                        driverVersion = CompatibilityHelper.GetCompatibleStoredVersion(BrowserName.Chrome, browserVersion);
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(driverVersion))
+                    {
+                        return driverVersion;
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Unable to get 'driverVersion'");
+                    }
+
+
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }                
+
+            }
+        }
+
+        public string GetLatestVersion(string specificVersion = "")
+        {
+
+            if (!String.IsNullOrWhiteSpace(specificVersion))
+            {
+                specificVersion = "_" + specificVersion;
+            }
+
+            var uri = new Uri("https://chromedriver.storage.googleapis.com/LATEST_RELEASE" + specificVersion);
             var webRequest = WebRequest.Create(uri);
             using (var response = webRequest.GetResponse())
             {
@@ -43,5 +123,6 @@ namespace WebDriverManager.DriverConfigs.Impl
                 }
             }
         }
+        
     }
 }

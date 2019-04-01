@@ -3,14 +3,9 @@ using System.IO;
 
 namespace WebDriverManager.Services.Impl
 {
-    public class VariableService : IVariableService
+    public class PathVariableService
     {
-        public void SetupVariable(string path)
-        {
-            UpdatePath(path);
-        }
-
-        protected void UpdatePath(string path)
+        protected internal void AddDriverToEnvironmentPathVariable(string path)
         {
             const string name = "PATH";
             var pathVariable = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Process);

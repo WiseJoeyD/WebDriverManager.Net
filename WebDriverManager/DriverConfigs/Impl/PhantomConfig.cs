@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
-using AngleSharp.Html.Parser;
+using WebDriverManager.Helpers;
 
 namespace WebDriverManager.DriverConfigs.Impl
 {
@@ -24,20 +26,19 @@ namespace WebDriverManager.DriverConfigs.Impl
         public virtual string GetBinaryName()
         {
             return "phantomjs.exe";
-        }
+        }        
 
-        public virtual string GetLatestVersion()
+        public string GetDriverVersion(string browserVersion)
         {
-            using (var client = new WebClient())
+            try
             {
-                var htmlCode = client.DownloadString("https://bitbucket.org/ariya/phantomjs/downloads");
-                var parser = new HtmlParser();
-                var document = parser.ParseDocument(htmlCode);
-                var version = document.QuerySelectorAll(".iterable-item > .name > a")
-                    .Select(element => element.TextContent)
-                    .FirstOrDefault(item => !item.Contains("beta"));
-                version = version?.Split('-')[1];
-                return version;
+                // look at dictionary and get latest version stored
+                //PhantomJS has no more active development (as of March 2019) so simply return last version from dictionary
+                return CompatibilityHelper.GetLatestStoredVersion(BrowserName.PhantomJS);
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException("Unable to get 'driverVersion'", ex.InnerException);
             }
         }
     }

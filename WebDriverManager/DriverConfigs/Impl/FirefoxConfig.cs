@@ -1,6 +1,11 @@
-﻿using System.Linq;
+﻿using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
-using AngleSharp.Html.Parser;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using WebDriverManager.Helpers;
 
 namespace WebDriverManager.DriverConfigs.Impl
 {
@@ -28,20 +33,108 @@ namespace WebDriverManager.DriverConfigs.Impl
             return "geckodriver.exe";
         }
 
-        public virtual string GetLatestVersion()
+        /// <summary>
+        /// The selenium driver list URL
+        /// </summary>
+        private const string _geckDriverListURL = "https://api.github.com";
+
+        private string GetLatestVersion()
         {
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            using (var client = new WebClient())
+            try
             {
-                var htmlCode = client.DownloadString("https://github.com/mozilla/geckodriver/releases");
-                var parser = new HtmlParser();
-                var document = parser.ParseDocument(htmlCode);
-                var version = document.QuerySelectorAll(".release-header .f1 a")
-                    .Select(element => element.TextContent)
-                    .FirstOrDefault()
-                    ?.Remove(0, 1);
-                return version;
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(_geckDriverListURL);
+                    client.DefaultRequestHeaders.Add("User-Agent", "Anything");
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var response = client.GetAsync("repos/mozilla/geckodriver/releases/latest").Result;
+                    response.EnsureSuccessStatusCode();
+                    var latestVersionJSON = response.Content.ReadAsStringAsync().Result;
+
+                    JObject jsonObject = JObject.Parse(latestVersionJSON);
+
+                    string versionTag = (string)jsonObject["tag_name"];
+
+                    return CompatibilityHelper.GetVersionSubString(versionTag);
+                }
             }
-        }
+            catch (Exception ex)
+            {
+                //Add Logging
+                throw new ArgumentException("Unable to get 'driverVersion'");
+            }
+        }        
+
+        public string GetDriverVersion(string browserVersion)
+        {
+            var driverVersion = String.Empty;
+
+            if (browserVersion.Equals("Latest", StringComparison.InvariantCultureIgnoreCase))
+            {
+                // look online
+                bool onlineLookupSuccessful;
+
+                try
+                {
+                    driverVersion = GetLatestVersion();
+                    onlineLookupSuccessful = true;
+                }
+                catch (Exception)
+                {
+                    onlineLookupSuccessful = false;
+                    //Add Logging
+                }
+
+
+                //was it successful?
+                if (!onlineLookupSuccessful)
+                {
+                    //no
+                    /// look at dictoinary and get latest version stored
+
+                    return CompatibilityHelper.GetLatestStoredVersion(BrowserName.Firefox);
+                }
+                else
+                {
+                    return driverVersion;
+                }
+            }
+            else
+            {
+                //search 
+                try
+                {
+                    //get matching version 
+                    driverVersion = CompatibilityHelper.GetCompatibleStoredVersion(BrowserName.Firefox, browserVersion);                  
+                    
+                    if (!string.IsNullOrWhiteSpace(driverVersion))
+                    {
+                        return driverVersion;
+                    }
+
+                    //if browser version is newer than examples stored in compatbility dictionary 
+                    //try using the most recent version of gecko driver
+                    driverVersion = CompatibilityHelper.GetLatestStoredVersion(BrowserName.Firefox);
+
+                    if(!string.IsNullOrWhiteSpace(driverVersion))
+                    {
+                        return driverVersion; 
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Unable to get 'driverVersion'");
+                    }
+
+
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+
+            }
+
+        }        
     }
 }

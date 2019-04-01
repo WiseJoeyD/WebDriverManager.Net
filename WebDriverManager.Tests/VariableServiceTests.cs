@@ -5,13 +5,13 @@ using Xunit;
 
 namespace WebDriverManager.Tests
 {
-    public class VariableServiceTests : VariableService
+    public class VariableServiceTests : PathVariableService
     {
         [Fact]
         public void UpdatePathResultValid()
         {
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "file.txt");
-            UpdatePath(filePath);
+            AddDriverToEnvironmentPathVariable(filePath);
             var pathVariable = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Process);
             var variable = Path.GetDirectoryName(filePath);
             Assert.NotNull(pathVariable);

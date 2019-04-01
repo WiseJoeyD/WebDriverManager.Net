@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
-using AngleSharp.Html.Parser;
+using WebDriverManager.Helpers;
 
 namespace WebDriverManager.DriverConfigs.Impl
 {
@@ -13,7 +15,7 @@ namespace WebDriverManager.DriverConfigs.Impl
 
         public virtual string GetUrl32()
         {
-            return GetUrl();
+            return "https://download.microsoft.com/download/<version>/MicrosoftWebDriver.exe";
         }
 
         public virtual string GetUrl64()
@@ -26,35 +28,31 @@ namespace WebDriverManager.DriverConfigs.Impl
             return "MicrosoftWebDriver.exe";
         }
 
-        public virtual string GetLatestVersion()
+        /// <summary>
+        /// Gets the latest version.
+        /// </summary>
+        /// <returns></returns>
+        public virtual string GetDriverVersion(string browserVersion)
         {
-            using (var client = new WebClient())
+            try
             {
-                var htmlCode = client.DownloadString("https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver");
-                var parser = new HtmlParser();
-                var document = parser.ParseDocument(htmlCode);
-                var version = document.QuerySelectorAll(".driver-download > a + p")
-                    .Select(element => element.TextContent)
-                    .FirstOrDefault()
-                    ?.Split(' ')[1]
-                    .Split(' ')[0];
-                return version;
+                if (browserVersion.Equals("Latest", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    // look at dictoinary and get latest version stored
+                    return CompatibilityHelper.GetLatestStoredVersion(BrowserName.Edge);
+                }
+                else
+                {
+                    // look at dictoinary and get matching version
+                    return CompatibilityHelper.GetCompatibleStoredVersion(BrowserName.Edge, browserVersion);
+                }
             }
+            catch (Exception ex)
+            {
+                throw new ArgumentException("Unable to get 'driverVersion'", ex.InnerException);
+            }
+
         }
 
-        public virtual string GetUrl()
-        {
-            using (var client = new WebClient())
-            {
-                var htmlCode = client.DownloadString("https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver");
-                var parser = new HtmlParser();
-                var document = parser.ParseDocument(htmlCode);
-                var url = document.QuerySelectorAll(".driver-download > a")
-                    .Select(element => element.Attributes.GetNamedItem("href"))
-                    .FirstOrDefault()
-                    ?.Value;
-                return url;
-            }
-        }
     }
 }

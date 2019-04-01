@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using WebDriverManager.DriverConfigs;
 using WebDriverManager.DriverConfigs.Impl;
 using Xunit;
@@ -34,7 +35,7 @@ namespace WebDriverManager.Tests
         [Theory, ClassData(typeof(DriverData))]
         protected void DriverDownloadTest(IDriverConfig driverConfig)
         {
-            new DriverManager().SetUpDriver(driverConfig);
+            new DriverManager().SetupLatestDriver(Directory.GetCurrentDirectory(), driverConfig);
         }
     }
 }

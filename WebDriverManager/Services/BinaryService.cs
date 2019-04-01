@@ -6,7 +6,7 @@ using WebDriverManager.Helpers;
 
 namespace WebDriverManager.Services.Impl
 {
-    public class BinaryService : IBinaryService
+    public class BinaryService
     {
         public string SetupBinary(string url, string zipDestination, string binDestination, string binaryName)
         {
@@ -17,7 +17,7 @@ namespace WebDriverManager.Services.Impl
             RemoveZip(zipDestination);
             return binDestination;
         }
-
+                
         protected string DownloadZip(string url, string destination)
         {
             if (File.Exists(destination)) return destination;
