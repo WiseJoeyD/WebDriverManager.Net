@@ -11,7 +11,7 @@ namespace WebDriverManager.Tests
     {
         private readonly List<object[]> _data = new List<object[]>
         {
-            new object[] {new ChromeConfig(), @"^\d+\.\d+$"},
+            new object[] {new ChromeConfig(), @"^\d+\.\d+\.*\d*\.*\d*$"},
             new object[] {new EdgeConfig(), @"^[A-Z0-9-/]*$"},
             new object[] {new FirefoxConfig(), @"^\d+\.\d+\.\d+$"},
             new object[] {new InternetExplorerConfig(), @"^\d+\.\d+\.\d+$"},

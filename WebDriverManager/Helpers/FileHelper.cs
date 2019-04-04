@@ -27,23 +27,6 @@ namespace WebDriverManager.Helpers
             var zipName = Path.GetFileName(url);
             return zipName;
         }
-
-        //***********************************
-
-        public static string GetZipDestination(string url)
-        {
-            var tempDirectory = Path.GetTempPath();
-            var zipName = Path.GetFileName(url);
-            if (zipName == null) throw new ArgumentNullException($"Can't get zip name from URL: {url}");
-            return Path.Combine(tempDirectory, zipName);
-        }
-
-        public static string GetBinDestination(string driverName, string version, Architecture architecture, string binName)
-        {
-            var currentDirectory = Directory.GetCurrentDirectory();
-            return Path.Combine(currentDirectory, driverName, version, architecture.ToString(), binName);
-        }
-
         
     }
 }
