@@ -8,13 +8,11 @@ namespace WebDriverManager.Tests
 {
     public class ServiceTests
     {
-        private readonly BinaryService _customBinaryService;
         private readonly PathVariableService _customVariableService;
         private readonly ChromeConfig _chromeConfig;
 
         public ServiceTests()
         {
-            _customBinaryService = new BinaryService();
             _customVariableService = new PathVariableService();
             _chromeConfig = new ChromeConfig();
         }
@@ -22,7 +20,7 @@ namespace WebDriverManager.Tests
         [Fact]
         public void CustomServiceTest()
         {
-            new DriverManager(_customBinaryService, _customVariableService).SetupLatestDriver(Directory.GetCurrentDirectory(),_chromeConfig);
+            new DriverManager(_customVariableService).SetupLatestDriver(Directory.GetCurrentDirectory(),_chromeConfig);
             var pathVariable = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Process);
             Assert.NotNull(pathVariable);
             Assert.Contains(_chromeConfig.GetName(), pathVariable);

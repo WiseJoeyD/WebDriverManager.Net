@@ -10,70 +10,24 @@ namespace WebDriverManager
 {
     public class DriverManager
     {
-        private readonly BinaryService _binaryService;
-        private readonly PathVariableService _variableService;
-
-        
+        private readonly PathVariableService _variableService;        
 
         public DriverManager()
         {
-            _binaryService = new BinaryService();
             _variableService = new PathVariableService();
         }
 
-        public DriverManager(BinaryService binaryService, PathVariableService variableService)
+        public DriverManager(PathVariableService variableService)
         {
-            _binaryService = binaryService;
             _variableService = variableService;
         }                
-
-        //public void SetUpDriver(IDriverConfig config, string version = "Latest",
-        //    Architecture architecture = Architecture.Auto)
-        //{
-
-        //    var lol = false;
-
-        //    if( config.GetType() == typeof(DriverConfigs.Impl.OperaConfig))
-        //    {
-        //        lol = true;
-        //    }
-
-        //    if (lol)
-        //    {
-        //        SetupLatestDriver(Directory.GetCurrentDirectory(), config, architecture);
-
-        //        //SetUpLocalDriver(@"C:\Downloads\chromedriver.exe");
-        //    }
-        //    //else
-        //    //{
-        //    //    architecture = architecture.Equals(Architecture.Auto) ? ArchitectureHelper.GetArchitecture() : architecture;
-        //    //    version = version.Equals("Latest") ? config.GetLatestVersion() : version;
-        //    //    var url = architecture.Equals(Architecture.X32) ? config.GetUrl32() : config.GetUrl64();
-        //    //    url = UrlHelper.BuildUrl(url, version);
-        //    //    var binaryPath = FileHelper.GetBinDestination(config.GetName(), version, architecture,
-        //    //        config.GetBinaryName());
-        //    //    SetUpDriver(url, binaryPath, config.GetBinaryName());
-        //    //}
-        //}
-
-        //public void SetUpDriver(string url, string binaryPath, string binaryName)
-        //{
-        //    var zipPath = FileHelper.GetZipDestination(url);
-        //    binaryPath = _binaryService.SetupBinary(url, zipPath, binaryPath, binaryName);
-        //    _variableService.AddDriverToEnvironmentPathVariable(binaryPath);
-        //}
-
-        //******************************************
-
-
+        
 
         public void SetupLatestDriver(string workingDirectory, IDriverConfig browserConfig,
                                 Architecture architecture = Architecture.Auto)
         {
             SetupCompatibleDriver(workingDirectory, browserConfig, "Latest", architecture);
         }
-
-
 
 
         public void SetupCompatibleDriver(string workingDirectory, IDriverConfig browserConfig, string browserVersion,

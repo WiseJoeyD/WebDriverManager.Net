@@ -217,13 +217,21 @@ namespace WebDriverManager.Helpers
             //source: https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/
             //unlike other drivers, edge driver name is the same, and the path differes by a GUID not a version
             //storing like a version as it is combined with eh url in the same way as the other browser URLs
+            //Version numbers represent either Edge brower and Edge HTML - due to way Microsoft display both versions
+            //both are shown, so including both to ensure users don't get an error if using either version
 
             VersionList.Add("42", "F/8/A/F8AF50AB-3C3A-4BC4-8773-DC27B32988DD");
+            VersionList.Add("17", "F/8/A/F8AF50AB-3C3A-4BC4-8773-DC27B32988DD");
             VersionList.Add("41", "D/4/1/D417998A-58EE-4EFE-A7CC-39EF9E020768");
+            VersionList.Add("16", "D/4/1/D417998A-58EE-4EFE-A7CC-39EF9E020768");
             VersionList.Add("40", "3/4/2/342316D7-EBE0-4F10-ABA2-AE8E0CDF36DD");
+            VersionList.Add("15", "3/4/2/342316D7-EBE0-4F10-ABA2-AE8E0CDF36DD");
             VersionList.Add("38", "3/2/D/32D3E464-F2EF-490F-841B-05D53C848D15");
+            VersionList.Add("14", "3/2/D/32D3E464-F2EF-490F-841B-05D53C848D15");
             VersionList.Add("25", "C/0/7/C07EBF21-5305-4EC8-83B1-A6FCC8F93F45");
+            VersionList.Add("13", "C/0/7/C07EBF21-5305-4EC8-83B1-A6FCC8F93F45");
             VersionList.Add("20", "8/D/0/8D0D08CF-790D-4586-B726-C6469A9ED49C");
+            VersionList.Add("12", "8/D/0/8D0D08CF-790D-4586-B726-C6469A9ED49C");
         }
     }
 }
