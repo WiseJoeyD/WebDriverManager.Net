@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using WebDriverManager.DriverConfigs;
@@ -11,12 +12,12 @@ namespace WebDriverManager.Tests
     {
         private readonly List<object[]> _data = new List<object[]>
         {
-            new object[] {new ChromeConfig()},
             new object[] {new EdgeConfig()},
             new object[] {new FirefoxConfig()},
             new object[] {new InternetExplorerConfig()},
             new object[] {new OperaConfig()},
-            new object[] {new PhantomConfig()}
+            new object[] {new PhantomConfig()},
+            new object[] {new ChromeConfig()}
         };
 
         public IEnumerator<object[]> GetEnumerator()
@@ -36,6 +37,9 @@ namespace WebDriverManager.Tests
         protected void DriverDownloadTest(IDriverConfig driverConfig)
         {
             new DriverManager().SetupLatestDriver(Directory.GetCurrentDirectory(), driverConfig);
+            var pathVariable = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Process);
+            Assert.NotNull(pathVariable);
+            Assert.Contains(driverConfig.GetName(), pathVariable);
         }
     }
 }

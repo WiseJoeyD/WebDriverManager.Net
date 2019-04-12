@@ -11,10 +11,10 @@ namespace WebDriverManager.Tests
         public void DownloadZipResultNotEmpty()
         {
             const string url = "https://chromedriver.storage.googleapis.com/2.46/chromedriver_win32.zip";
-            var tempDirectory = FileHelper.GetTempDirectoryJoey();
+            var tempDirectory = FileHelper.GetTempDirectory();
             var downloadFileName = FileHelper.GetFileNameFromUrl(url);
 
-            var zipLocation = ZipHelper.DownloadZipJoey(url, tempDirectory, downloadFileName);
+            var zipLocation = ZipHelper.DownloadZip(url, tempDirectory, downloadFileName);
 
             Assert.NotEmpty(zipLocation);
             Assert.True(File.Exists(zipLocation));
@@ -44,7 +44,7 @@ namespace WebDriverManager.Tests
             File.Copy(originalZipPath, newZipPath, true);
 
             Assert.True(File.Exists(newZipPath));
-            ZipHelper.DeleteZipJoey(newZipPath);
+            ZipHelper.DeleteZip(newZipPath);
             Assert.False(File.Exists(newZipPath));
         }
     }

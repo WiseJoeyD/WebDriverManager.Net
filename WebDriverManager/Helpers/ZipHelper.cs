@@ -2,12 +2,13 @@
 using System.IO;
 using System.IO.Compression;
 using System.Net;
+using System.Threading;
 
 namespace WebDriverManager.Helpers
 {
     public static class ZipHelper
-    {       
-        public static string DownloadZipJoey(string url, string tempDirectory, string fileName)
+    {
+        public static string DownloadZip(string url, string tempDirectory, string fileName)
         {
             try
             {
@@ -18,6 +19,9 @@ namespace WebDriverManager.Helpers
                     using (var webClient = new WebClient())
                     {
                         webClient.DownloadFile(new Uri(url), zipFileLocation);
+
+                        if (!File.Exists(zipFileLocation))
+                            throw new FileNotFoundException(fileName + " was not downloaded to " + tempDirectory, fileName);
                     }
                 }
 
@@ -29,25 +33,44 @@ namespace WebDriverManager.Helpers
             }
         }
 
-        public static bool UnZipToDriverLocation(string zipLocation, string driveLocation, string driverName)
+        public static bool UnZipToDriverLocation(string zipLocation, string driverLocation, string driverName)
         {
             try
             {
                 if (!Path.GetExtension(zipLocation).Equals(".zip", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    File.Copy(zipLocation, driveLocation);
+                    File.Copy(zipLocation, driverLocation);
                 }
                 else
                 {
-                    using (var zip = ZipFile.Open(zipLocation, ZipArchiveMode.Read))
+                    int NumberOfRetries = 3;
+                    int DelayOnRetry = new Random().Next(10, 1500);
+
+                    for (int i = 1; i <= NumberOfRetries; ++i)
                     {
-                        foreach (var entry in zip.Entries)
+                        try
                         {
-                            if (entry.Name == driverName)
+                            var zipArchive = ZipFile.OpenRead(zipLocation);
+
+                            foreach (var entry in zipArchive.Entries)
                             {
-                                entry.ExtractToFile(driveLocation, true);
+                                if (entry.Name == driverName)
+                                {
+                                    entry.ExtractToFile(driverLocation, true);
+                                }
                             }
+
+                            zipArchive.Dispose();
+
+                            break; // When done we can break loop
                         }
+                        catch (IOException ioEx) when (i <= NumberOfRetries)
+                        {
+                            // You may check error code to filter some exceptions, not every error
+                            // can be recovered.
+                            Thread.Sleep(DelayOnRetry);
+                        }
+
                     }
                 }
 
@@ -59,10 +82,27 @@ namespace WebDriverManager.Helpers
             }
         }
 
-        public static void DeleteZipJoey(string path)
-        {
-            File.Delete(path);
-        }
 
+
+        public static void DeleteZip(string path)
+        {
+            int NumberOfRetries = 3;
+            int DelayOnRetry = new Random().Next(10, 1500);
+
+            for (int i = 1; i <= NumberOfRetries; ++i)
+            {
+                try
+                {
+                    File.Delete(path);
+
+                    
+                }
+                catch (IOException ioEx) when (i <= NumberOfRetries)
+                {
+                    Thread.Sleep(DelayOnRetry);
+                }
+            }
+
+        }
     }
 }
