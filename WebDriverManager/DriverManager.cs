@@ -23,17 +23,15 @@ namespace WebDriverManager
         }                
         
 
-        public void SetupLatestDriver(string workingDirectory, IDriverConfig browserConfig,
-                                Architecture architecture = Architecture.Auto)
+        public void SetupLatestDriver(string workingDirectory, IDriverConfig browserConfig, bool use32bit = true)
         {
-            SetupCompatibleDriver(workingDirectory, browserConfig, "Latest", architecture);
+            SetupCompatibleDriver(workingDirectory, browserConfig, "Latest", use32bit);
         }
 
 
-        public void SetupCompatibleDriver(string workingDirectory, IDriverConfig browserConfig, string browserVersion,
-                                        Architecture architecture = Architecture.Auto)
+        public void SetupCompatibleDriver(string workingDirectory, IDriverConfig browserConfig, string browserVersion, bool use32bit = true)
         {                        
-            var driverArchitecture = architecture.Equals(Architecture.Auto) ? ArchitectureHelper.GetArchitecture() : architecture;                     
+            var driverArchitecture = use32bit ? Architecture.X32 : ArchitectureHelper.GetArchitecture();
 
             List<Tuple<string, string>> driverInfo;
 
@@ -50,17 +48,17 @@ namespace WebDriverManager
             }
             else
             {
-                var tempDirectory = FileHelper.GetTempDirectoryJoey();
+                var tempDirectory = FileHelper.GetTempDirectory();
                 var driverName = browserConfig.GetBinaryName();
                 var downloadedFileName = FileHelper.GetFileNameFromUrl(url);                
 
-                var zipLocation = ZipHelper.DownloadZipJoey(url, tempDirectory, downloadedFileName);
+                var zipLocation = ZipHelper.DownloadZip(url, tempDirectory, downloadedFileName);
 
                 FileHelper.CreateDestinationDirectory(driverLocation);
 
                 ZipHelper.UnZipToDriverLocation(zipLocation, driverLocation, driverName);
 
-                ZipHelper.DeleteZipJoey(zipLocation);
+                ZipHelper.DeleteZip(zipLocation);
 
                 SetUpLocalDriver(driverLocation);
             }

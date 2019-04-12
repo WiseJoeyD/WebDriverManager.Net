@@ -5,7 +5,7 @@ namespace WebDriverManager.Helpers
 {
     public static class FileHelper
     {
-        public static string GetTempDirectoryJoey()
+        public static string GetTempDirectory()
         {
             var tempDirectory = Path.GetTempPath();
             return tempDirectory;
