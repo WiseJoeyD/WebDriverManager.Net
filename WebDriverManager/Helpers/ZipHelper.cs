@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
@@ -68,6 +69,7 @@ namespace WebDriverManager.Helpers
                         {
                             // You may check error code to filter some exceptions, not every error
                             // can be recovered.
+                            Debug.WriteLine(ioEx.Message);
                             Thread.Sleep(DelayOnRetry);
                         }
 
@@ -99,6 +101,9 @@ namespace WebDriverManager.Helpers
                 }
                 catch (IOException ioEx) when (i <= NumberOfRetries)
                 {
+                    // You may check error code to filter some exceptions, not every error
+                    // can be recovered.
+                    Debug.WriteLine(ioEx.Message);
                     Thread.Sleep(DelayOnRetry);
                 }
             }

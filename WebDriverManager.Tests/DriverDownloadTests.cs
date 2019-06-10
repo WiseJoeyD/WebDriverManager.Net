@@ -13,6 +13,7 @@ namespace WebDriverManager.Tests
         private readonly List<object[]> _data = new List<object[]>
         {
             new object[] {new EdgeConfig()},
+            new object[] {new EdgeChromiumConfig()},
             new object[] {new FirefoxConfig()},
             new object[] {new InternetExplorerConfig()},
             new object[] {new OperaConfig()},
