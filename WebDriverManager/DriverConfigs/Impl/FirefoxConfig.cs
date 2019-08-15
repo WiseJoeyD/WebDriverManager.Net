@@ -56,13 +56,13 @@ namespace WebDriverManager.DriverConfigs.Impl
 
                     string versionTag = (string)jsonObject["tag_name"];
 
-                    return CompatibilityHelper.GetVersionSubString(versionTag);
+                    return CompatibilityHelper.GetVersionSubString(versionTag, @"[^v.]\d*.\d*.\d");
                 }
             }
             catch (Exception ex)
             {
                 //Add Logging
-                throw new ArgumentException("Unable to get 'driverVersion'");
+                throw new ArgumentException("Unable to get 'driverVersion'", ex.InnerException);
             }
         }        
 

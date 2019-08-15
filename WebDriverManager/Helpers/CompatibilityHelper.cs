@@ -32,6 +32,9 @@ namespace WebDriverManager.Helpers
                 case BrowserName.PhantomJS:
                     SetupPhantomJSDictionary();
                     break;
+                case BrowserName.EdgeChromium:
+                    SetupEdgeChromiumDictionary();
+                    break;
                 default:
                     break;
             }                 
@@ -51,9 +54,9 @@ namespace WebDriverManager.Helpers
             }
         }
 
-        public static string GetVersionSubString(string versionString)
+        public static string GetVersionSubString(string versionString, string @regEx)
         {
-            var match = Regex.Match(versionString, @"[^v.]\d*.\d*.\d").Value;
+            var match = Regex.Match(versionString, @regEx).Value;
 
             if (!string.IsNullOrWhiteSpace(match))
             {
@@ -67,11 +70,11 @@ namespace WebDriverManager.Helpers
 
         public static string GetLatestStoredVersion(BrowserName browser)
         {
-            CompatibilityHelper.Initialise(browser);
+            Initialise(browser);
 
             try
             {
-                var latestStoredVersion = CompatibilityHelper.VersionList.OrderByDescending(x => x.Key).First().Value;
+                var latestStoredVersion = VersionList.OrderByDescending(x => x.Key).First().Value;
 
                 return latestStoredVersion;
             }
@@ -84,11 +87,11 @@ namespace WebDriverManager.Helpers
 
         public static string GetCompatibleStoredVersion(BrowserName browser, string versionNumber)
         {
-            CompatibilityHelper.Initialise(browser);
+            Initialise(browser);
 
             try
             {
-                return CompatibilityHelper.VersionList[versionNumber];
+                return VersionList[versionNumber];
             }
             catch (Exception)
             {
@@ -101,137 +104,154 @@ namespace WebDriverManager.Helpers
 
         private static void SetupInternetExplorerDictionary()
         {
-            VersionList = new Dictionary<string, string>();
-
-            //Latest version compatible with all previous versions
-            //updated March 2019
-            //3.141.59
-            VersionList.Add("Latest", "3.141.5");
+            VersionList = new Dictionary<string, string>
+            {
+                //Latest version compatible with all previous versions
+                //updated June 2019
+                //3.141.59
+                { "Latest", "3.141.59" }
+            };
         }
 
         private static void SetupPhantomJSDictionary()
         {
-            VersionList = new Dictionary<string, string>();
-
-            //Latest version compatible with all previous versions
-            //updated March 2019
-            //2.1.1
-            VersionList.Add("Latest", "2.1.1");
+            VersionList = new Dictionary<string, string>
+            {
+                //2.1.1 - last version
+                { "Latest", "2.1.1" }
+            };
         }
 
         private static void SetupChromeDictionary()
         {
-            VersionList = new Dictionary<string, string>();
-
-            //updated March 2019
-            //source: https://chromedriver.storage.googleapis.com/2.46/notes.txt
-            VersionList.Add("73", "2.46");
-            VersionList.Add("72", "2.46");
-            VersionList.Add("71", "2.46");
-            VersionList.Add("70", "2.45");
-            VersionList.Add("69", "2.44");
-            VersionList.Add("68", "2.42");
-            VersionList.Add("67", "2.41");
-            VersionList.Add("66", "2.40");
-            VersionList.Add("65", "2.38");
-            VersionList.Add("64", "2.37");
-            VersionList.Add("63", "2.36");
-            VersionList.Add("62", "2.35");
-            VersionList.Add("61", "2.34");
-            VersionList.Add("60", "2.33");
-            VersionList.Add("59", "2.32");
-            VersionList.Add("58", "2.31");
-            VersionList.Add("57", "2.29");
-            VersionList.Add("56", "2.29");
-            VersionList.Add("55", "2.28");
-            VersionList.Add("54", "2.27");
-            VersionList.Add("53", "2.26");
-            VersionList.Add("52", "2.25");
-            VersionList.Add("51", "2.23");
-            VersionList.Add("50", "2.23");
-            VersionList.Add("49", "2.22");
-            VersionList.Add("48", "2.21");
-            VersionList.Add("47", "2.21");
-            VersionList.Add("46", "2.21");
-            VersionList.Add("45", "2.20");
-            VersionList.Add("44", "2.20");
-            VersionList.Add("43", "2.20");
-            VersionList.Add("42", "2.17");
-            VersionList.Add("41", "2.15");
-            VersionList.Add("40", "2.14");
-            VersionList.Add("39", "2.14");
-            VersionList.Add("38", "2.13");
-            VersionList.Add("37", "2.12");
-            VersionList.Add("36", "2.12");
+            VersionList = new Dictionary<string, string>
+            {
+                //updated June 2019
+                // 74+ versions changed version formats
+                //source: https://chromedriver.storage.googleapis.com/index.html
+                //compatbility source: https://chromedriver.storage.googleapis.com/2.46/notes.txt
+                { "73", "2.46" },
+                { "72", "2.46" },
+                { "71", "2.46" },
+                { "70", "2.45" },
+                { "69", "2.44" },
+                { "68", "2.42" },
+                { "67", "2.41" },
+                { "66", "2.40" },
+                { "65", "2.38" },
+                { "64", "2.37" },
+                { "63", "2.36" },
+                { "62", "2.35" },
+                { "61", "2.34" },
+                { "60", "2.33" },
+                { "59", "2.32" },
+                { "58", "2.31" },
+                { "57", "2.29" },
+                { "56", "2.29" },
+                { "55", "2.28" },
+                { "54", "2.27" },
+                { "53", "2.26" },
+                { "52", "2.25" },
+                { "51", "2.23" },
+                { "50", "2.23" },
+                { "49", "2.22" },
+                { "48", "2.21" },
+                { "47", "2.21" },
+                { "46", "2.21" },
+                { "45", "2.20" },
+                { "44", "2.20" },
+                { "43", "2.20" },
+                { "42", "2.17" },
+                { "41", "2.15" },
+                { "40", "2.14" },
+                { "39", "2.14" },
+                { "38", "2.13" },
+                { "37", "2.12" },
+                { "36", "2.12" }
+            };
         }
 
         private static void SetupFirefoxDictionary()
         {
-            VersionList = new Dictionary<string, string>();
-
-            //updated March 2019
-            //source: https://firefox-source-docs.mozilla.org/testing/geckodriver/Support.html
-            VersionList.Add("68", "0.24.0");
-            VersionList.Add("67", "0.24.0");
-            VersionList.Add("66", "0.24.0");
-            VersionList.Add("65", "0.24.0");
-            VersionList.Add("64", "0.24.0");
-            VersionList.Add("63", "0.24.0");
-            VersionList.Add("62", "0.24.0");
-            VersionList.Add("61", "0.24.0");
-            VersionList.Add("60", "0.24.0");
-            VersionList.Add("59", "0.24.0");
-            VersionList.Add("58", "0.24.0");
-            VersionList.Add("57", "0.24.0");
-            VersionList.Add("56", "0.20.1");
-            VersionList.Add("55", "0.20.1");
-            VersionList.Add("54", "0.18.0");
-            VersionList.Add("53", "0.18.0");
-            VersionList.Add("52", "0.17.0");
+            VersionList = new Dictionary<string, string>
+            {
+                //updated June 2019
+                // Version 57 maintains open ended compatibility
+                //source: https://firefox-source-docs.mozilla.org/testing/geckodriver/Support.html
+                { "57", "0.24.0" },
+                { "56", "0.20.1" },
+                { "55", "0.20.1" },
+                { "54", "0.18.0" },
+                { "53", "0.18.0" },
+                { "52", "0.17.0" }
+            };
         }
 
         private static void SetupOperaDictionary()
         {
-            VersionList = new Dictionary<string, string>();
-
-            //updated March 2019
-            //source: https://github.com/operasoftware/operachromiumdriver/releases
-            VersionList.Add("58", "2.42");
-            VersionList.Add("57", "2.41");
-            VersionList.Add("56", "2.40");
-            VersionList.Add("55", "2.38");
-            VersionList.Add("54", "2.37");
-            VersionList.Add("53", "2.36");
-            VersionList.Add("52", "2.35");
-            VersionList.Add("50", "2.33");
-            VersionList.Add("49", "2.32");
-            VersionList.Add("48", "2.30");
-            VersionList.Add("46", "2.29");
+            VersionList = new Dictionary<string, string>
+            {
+                //updated March 2019
+                //source: https://github.com/operasoftware/operachromiumdriver/releases
+                { "62", "75.0.3770.100"},
+                { "60", "2.45" },
+                { "59", "2.42" },
+                { "58", "2.42" },
+                { "57", "2.41" },
+                { "56", "2.40" },
+                { "55", "2.38" },
+                { "54", "2.37" },
+                { "53", "2.36" },
+                { "52", "2.35" },
+                { "50", "2.33" },
+                { "49", "2.32" },
+                { "48", "2.30" },
+                { "46", "2.29" }
+            };
         }
 
         private static void SetupEdgeDictionary()
         {
-            VersionList = new Dictionary<string, string>();
+            VersionList = new Dictionary<string, string>
+            {
+                //updated June 2019
+                //source: https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/
+                //unlike other drivers, edge driver name is the same, and the path differes by a GUID not a version
+                //storing like a version as it is combined with eh url in the same way as the other browser URLs
+                //Version numbers represent either Edge brower and Edge HTML - due to way Microsoft display both versions
+                //both are shown, so including both to ensure users don't get an error if using either version
 
-            //updated March 2019
-            //source: https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/
-            //unlike other drivers, edge driver name is the same, and the path differes by a GUID not a version
-            //storing like a version as it is combined with eh url in the same way as the other browser URLs
-            //Version numbers represent either Edge brower and Edge HTML - due to way Microsoft display both versions
-            //both are shown, so including both to ensure users don't get an error if using either version
+                { "42", "F/8/A/F8AF50AB-3C3A-4BC4-8773-DC27B32988DD" },
+                { "17", "F/8/A/F8AF50AB-3C3A-4BC4-8773-DC27B32988DD" },
+                { "41", "D/4/1/D417998A-58EE-4EFE-A7CC-39EF9E020768" },
+                { "16", "D/4/1/D417998A-58EE-4EFE-A7CC-39EF9E020768" },
+                { "40", "3/4/2/342316D7-EBE0-4F10-ABA2-AE8E0CDF36DD" },
+                { "15", "3/4/2/342316D7-EBE0-4F10-ABA2-AE8E0CDF36DD" },
+                { "38", "3/2/D/32D3E464-F2EF-490F-841B-05D53C848D15" },
+                { "14", "3/2/D/32D3E464-F2EF-490F-841B-05D53C848D15" },
+                { "25", "C/0/7/C07EBF21-5305-4EC8-83B1-A6FCC8F93F45" },
+                { "13", "C/0/7/C07EBF21-5305-4EC8-83B1-A6FCC8F93F45" },
+                { "20", "8/D/0/8D0D08CF-790D-4586-B726-C6469A9ED49C" },
+                { "12", "8/D/0/8D0D08CF-790D-4586-B726-C6469A9ED49C" }
+            };
+        }
 
-            VersionList.Add("42", "F/8/A/F8AF50AB-3C3A-4BC4-8773-DC27B32988DD");
-            VersionList.Add("17", "F/8/A/F8AF50AB-3C3A-4BC4-8773-DC27B32988DD");
-            VersionList.Add("41", "D/4/1/D417998A-58EE-4EFE-A7CC-39EF9E020768");
-            VersionList.Add("16", "D/4/1/D417998A-58EE-4EFE-A7CC-39EF9E020768");
-            VersionList.Add("40", "3/4/2/342316D7-EBE0-4F10-ABA2-AE8E0CDF36DD");
-            VersionList.Add("15", "3/4/2/342316D7-EBE0-4F10-ABA2-AE8E0CDF36DD");
-            VersionList.Add("38", "3/2/D/32D3E464-F2EF-490F-841B-05D53C848D15");
-            VersionList.Add("14", "3/2/D/32D3E464-F2EF-490F-841B-05D53C848D15");
-            VersionList.Add("25", "C/0/7/C07EBF21-5305-4EC8-83B1-A6FCC8F93F45");
-            VersionList.Add("13", "C/0/7/C07EBF21-5305-4EC8-83B1-A6FCC8F93F45");
-            VersionList.Add("20", "8/D/0/8D0D08CF-790D-4586-B726-C6469A9ED49C");
-            VersionList.Add("12", "8/D/0/8D0D08CF-790D-4586-B726-C6469A9ED49C");
+        private static void SetupEdgeChromiumDictionary()
+        {
+            VersionList = new Dictionary<string, string>
+            {
+                //updated June 2019
+                //source: https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/
+                //unlike other drivers, edge driver name is the same, and the path differes by a GUID not a version
+                //storing like a version as it is combined with eh url in the same way as the other browser URLs
+                //Version numbers represent either Edge brower and Edge HTML - due to way Microsoft display both versions
+                //both are shown, so including both to ensure users don't get an error if using either version
+
+                { "78", "78.0.246.0" },
+                { "77", "77.0.237.0" },
+                { "76", "76.0.183.0" },
+                { "75", "75.0.139.20" }
+            };
         }
     }
 }
