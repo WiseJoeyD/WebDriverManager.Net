@@ -193,6 +193,7 @@ namespace WebDriverManager.Helpers
             {
                 //updated March 2019
                 //source: https://github.com/operasoftware/operachromiumdriver/releases
+
                 { "62", "75.0.3770.100"},
                 { "60", "2.45" },
                 { "59", "2.42" },
