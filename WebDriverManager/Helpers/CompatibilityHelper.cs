@@ -54,9 +54,9 @@ namespace WebDriverManager.Helpers
             }
         }
 
-        public static string GetVersionSubString(string versionString)
+        public static string GetVersionSubString(string versionString, string @regEx)
         {
-            var match = Regex.Match(versionString, @"[^v.]\d*.\d*.\d").Value;
+            var match = Regex.Match(versionString, @regEx).Value;
 
             if (!string.IsNullOrWhiteSpace(match))
             {
@@ -193,6 +193,8 @@ namespace WebDriverManager.Helpers
             {
                 //updated March 2019
                 //source: https://github.com/operasoftware/operachromiumdriver/releases
+
+                { "62", "75.0.3770.100"},
                 { "60", "2.45" },
                 { "59", "2.42" },
                 { "58", "2.42" },
@@ -246,7 +248,10 @@ namespace WebDriverManager.Helpers
                 //Version numbers represent either Edge brower and Edge HTML - due to way Microsoft display both versions
                 //both are shown, so including both to ensure users don't get an error if using either version
 
-                { "76", "76.0.168.0" }
+                { "78", "78.0.246.0" },
+                { "77", "77.0.237.0" },
+                { "76", "76.0.183.0" },
+                { "75", "75.0.139.20" }
             };
         }
     }
