@@ -4,12 +4,13 @@ using System.IO;
 using System.IO.Compression;
 using System.Net;
 using System.Threading;
+using WebDriverManager.Proxy;
 
 namespace WebDriverManager.Helpers
 {
     public static class ZipHelper
     {
-        public static string DownloadZip(string url, string tempDirectory, string fileName)
+        public static string DownloadZip(string url, string tempDirectory, string fileName, WDMProxy proxy = null)
         {
             try
             {
@@ -19,6 +20,11 @@ namespace WebDriverManager.Helpers
                 {
                     using (var webClient = new WebClient())
                     {
+                        if(proxy != null)
+                        {
+                            webClient.Proxy = proxy.userProxy;
+                        }
+
                         webClient.DownloadFile(new Uri(url), zipFileLocation);
 
                         if (!File.Exists(zipFileLocation))
