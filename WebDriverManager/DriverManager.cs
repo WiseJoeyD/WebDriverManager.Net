@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using WebDriverManager.DriverConfigs;
 using WebDriverManager.Helpers;
+using WebDriverManager.Proxy;
 using WebDriverManager.Services;
 using WebDriverManager.Services.Impl;
 
@@ -23,13 +24,13 @@ namespace WebDriverManager
         }                
         
 
-        public void SetupLatestDriver(string workingDirectory, IDriverConfig browserConfig, bool use32bit = true)
+        public void SetupLatestDriver(string workingDirectory, IDriverConfig browserConfig, bool use32bit = true, WDMProxy proxy = null)
         {
-            SetupCompatibleDriver(workingDirectory, browserConfig, "Latest", use32bit);
+            SetupCompatibleDriver(workingDirectory, browserConfig, "Latest", use32bit, proxy);
         }
 
 
-        public void SetupCompatibleDriver(string workingDirectory, IDriverConfig browserConfig, string browserVersion, bool use32bit = true)
+        public void SetupCompatibleDriver(string workingDirectory, IDriverConfig browserConfig, string browserVersion, bool use32bit = true, WDMProxy proxy = null)
         {                        
             var driverArchitecture = use32bit ? Architecture.X32 : ArchitectureHelper.GetArchitecture();
 
@@ -52,7 +53,7 @@ namespace WebDriverManager
                 var driverName = browserConfig.GetBinaryName();
                 var downloadedFileName = FileHelper.GetFileNameFromUrl(url);                
 
-                var zipLocation = ZipHelper.DownloadZip(url, tempDirectory, downloadedFileName);
+                var zipLocation = ZipHelper.DownloadZip(url, tempDirectory, downloadedFileName, proxy);
 
                 FileHelper.CreateDestinationDirectory(driverLocation);
 
