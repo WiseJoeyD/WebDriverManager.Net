@@ -105,7 +105,7 @@ namespace WebDriverManager.DriverConfigs.Impl
                 //search 
                 try
                 {
-                    //get matching version 
+                    //get last compatible version of webdriver for given browser version
                     driverVersion = CompatibilityHelper.GetCompatibleStoredVersion(BrowserName.Firefox, browserVersion);                  
                     
                     if (!string.IsNullOrWhiteSpace(driverVersion))
@@ -113,19 +113,10 @@ namespace WebDriverManager.DriverConfigs.Impl
                         return driverVersion;
                     }
 
-                    //if browser version is newer than examples stored in compatbility dictionary 
-                    //try using the most recent version of gecko driver
-                    driverVersion = CompatibilityHelper.GetLatestStoredVersion(BrowserName.Firefox);
-
-                    if(!string.IsNullOrWhiteSpace(driverVersion))
-                    {
-                        return driverVersion; 
-                    }
                     else
                     {
                         throw new ArgumentException("Unable to get 'driverVersion'");
                     }
-
 
                 }
                 catch (Exception ex)

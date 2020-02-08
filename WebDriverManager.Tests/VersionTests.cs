@@ -42,5 +42,46 @@ namespace WebDriverManager.Tests
             Assert.NotEmpty(version);
             Assert.True(match.Success);
         }
+
+        [Fact]
+        protected void FirefoxVersionListTest()
+        {
+            var browserConfig = new FirefoxConfig();
+            var version = browserConfig.GetDriverVersion("58");
+
+            Assert.NotEmpty(version);
+            Assert.Equal("0.25.0", version);
+        }
+
+        [Fact]
+        protected void ChromeVersionListTest()
+        {
+            var browserConfig = new ChromeConfig();
+            var version = browserConfig.GetDriverVersion("73");
+
+            Assert.NotEmpty(version);
+            Assert.Equal("2.46", version);
+        }
+
+        [Fact]
+        protected void InternetExplorerVersionListTest()
+        {
+            var browserConfig = new InternetExplorerConfig();
+            var version = browserConfig.GetDriverVersion("11.973");
+
+            Assert.NotEmpty(version);
+            Assert.Equal("3.150.1", version);
+        }
+
+        [Fact]
+        protected void EdgeVersionListTest()
+        {
+            var browserConfig = new EdgeConfig();
+            var version = browserConfig.GetDriverVersion("16");
+
+            Assert.NotEmpty(version);
+            Assert.Equal("D/4/1/D417998A-58EE-4EFE-A7CC-39EF9E020768", version);
+        }
+        
     }
 }

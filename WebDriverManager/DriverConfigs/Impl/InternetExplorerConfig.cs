@@ -131,29 +131,5 @@ namespace WebDriverManager.DriverConfigs.Impl
             return mostRecentVersion;
         }
 
-
-        /// <summary>
-        /// Gets the latest version.
-        /// </summary>
-        /// <returns></returns>
-        private string GetLatestVersion()
-        {
-            using (var client = new WebClient())
-            {
-                var xmlhtml = client.DownloadString(_seleniumDriverListURL);
-
-                var versionXml = new XmlDocument();
-                versionXml.LoadXml(xmlhtml);
-
-                //using xpath to find only contents with 'IEDriverServer' string 
-                XmlNodeList xPathIEDriverNodeList = versionXml.SelectNodes("//*[contains(text(), 'IEDriverServer_Win32')]/..");
-
-                // Find the most recent version number based on Modifed date
-                string mostRecentVersion = GetMostRecentVersionNumber(xPathIEDriverNodeList);
-
-                return mostRecentVersion;
-            }
-        }
-
     }
 }
